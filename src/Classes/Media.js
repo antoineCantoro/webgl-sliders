@@ -9,6 +9,7 @@ export default class Media {
     scene,
     geometry,
     index,
+    length,
     screen,
     viewport
   }) {
@@ -19,10 +20,13 @@ export default class Media {
     this.index = index;
     this.screen = screen;
     this.viewport = viewport;
+    this.length = length;
+
+    this.extra = 0
     
     this.createProgram()
     this.createMesh()
-    // this.createBounds()
+    this.createBounds()
 
     this.onResize()
   }
@@ -30,7 +34,10 @@ export default class Media {
   // Creates
 
   createProgram() {
-    const texture = new Texture(this.gl);
+    const texture = new Texture(this.gl, {
+      generateMipmaps: false
+    });
+
     texture.image = this.element;    
 
     this.program = new Program(this.gl, {
@@ -38,8 +45,9 @@ export default class Media {
       fragment: fragmentShader,
       uniforms: {
         uTexture: { value: texture },
-        uScreenSizes: { value: [0, 0] },
-        uImageSize: { value: [0, 0] },
+        uPlaneSizes: { value: [0, 0] },
+        uImageSizes: { value: [this.element.naturalWidth, this.element.naturalHeight] },
+        uViewportSizes: { value: [this.viewport.width, this.viewport.height] },
         uTime: { value: 0 },
       },
     });
@@ -76,11 +84,56 @@ export default class Media {
 
 
   // Events
-  onResize() {
+  onResize({ screen, viewport } = {}) {
+    if (screen) {
+      this.screen = screen
+    }
+    if (viewport) {
+      this.viewport = viewport
+      this.mesh.program.uniforms.uViewportSizes.value = [this.viewport.width, this.viewport.height]
+    }
+
+    // Set original scale
+
+    this.scale = this.screen.height / 1500
+
+    this.mesh.scale.y = this.viewport.height * (960 * this.scale) / this.screen.height
+    this.mesh.scale.x = this.viewport.width * (640 * this.scale) / this.screen.width    
+   
+    this.mesh.program.uniforms.uPlaneSizes.value = [this.mesh.scale.x, this.mesh.scale.y]
+
+
+    // Set original positions
+    this.padding = 0.2
+    this.width = this.mesh.scale.x + this.padding
+    this.widthTotal = this.width * this.length
+    this.x = this.width * this.index
+
+    console.log(this.x);
     
   }
 
-  onUpdate() {
-    // console.log('update');
+  onUpdate(scroll, direction) {
+    this.mesh.position.x = this.x - scroll * 0.5 - this.extra
+
+    const planeOffset = this.mesh.scale.x / 2
+    const viewportOffset = this.viewport.width
+   
+    this.isBefore = this.mesh.position.x + planeOffset < -viewportOffset
+    this.isAfter = this.mesh.position.x - planeOffset > viewportOffset
+   
+    if (direction === 'right' && this.isBefore) {
+      this.extra -= this.widthTotal
+   
+      this.isBefore = false
+      this.isAfter = false
+    }
+   
+    if (direction === 'left' && this.isAfter) {
+      this.extra += this.widthTotal
+   
+      this.isBefore = false
+      this.isAfter = false
+    }
   }
 }

@@ -42,10 +42,11 @@ class App {
       width: 0
     }
 
-    this.mouse = {
+    this.scroll = {
       current: 0,
       target: 0,
-      easing: 0.1,
+      last: 0,
+      easing: 0.2,
     }    
 
     this.createRenderer()
@@ -91,9 +92,7 @@ class App {
   }
 
   createMedias() {
-
     this.medias = this.images.map((image, index) => {
-      
       let media = new Media({
         element: image,
         gl: this.gl,
@@ -102,7 +101,9 @@ class App {
         total: this.images.length,
         viewport: this.viewport,
         scene: this.scene,
-        camera: this.camera
+        camera: this.camera,
+        screen: this.screenSizes,
+        length: this.images.length
       });
 
       return media;
@@ -112,7 +113,7 @@ class App {
   // Events
   onMouseWheel(event) {
     const normalized = normalizeWheel(event);
-    this.mouse.target += normalized.pixelY * 0.005
+    this.scroll.target += normalized.pixelY * 0.005
   }
 
   onResize() {
@@ -127,14 +128,19 @@ class App {
       aspect: this.gl.canvas.width / this.gl.canvas.height,
     });
 
+    const height = 2 * Math.tan(this.camera.fov * Math.PI / 180 / 2) * this.camera.position.z
+
     this.viewport = {
-      height: 2 * Math.tan(this.camera.fov * Math.PI / 180 / 2) * this.camera.position.z,
-      width: this.gl.canvas.width
+      height: height,
+      width: height * this.camera.aspect
     }
 
     if (this.medias) {
       this.medias.forEach(media => {
-        media.onResize();
+        media.onResize({
+          screen: this.screen,
+          viewport: this.viewport
+        });
       });
     }
   }
@@ -148,13 +154,21 @@ class App {
 
   // Update
   update() {    
-    this.mouse.current = lerp(this.mouse.current, this.mouse.target, this.mouse.easing);
+    this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.easing);
+
+    if (this.scroll.current > this.scroll.last) {
+      this.direction = 'right'
+    } else {
+      this.direction = 'left'
+    }
 
     if (this.medias) {
       this.medias.forEach(media => {
-        media.onUpdate();
+        media.onUpdate(this.scroll.current, this.direction);
       });
     }
+
+    this.scroll.last = this.scroll.current
     
     this.renderer.render({ scene: this.scene, camera: this.camera });
     window.requestAnimationFrame(this.update.bind(this));
