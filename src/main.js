@@ -1,4 +1,5 @@
 import './style.scss'
+import { lerp } from './Utils/lerp';
 import { Renderer, Camera, Transform, Box, Plane, Program, Mesh } from 'ogl';
 import normalizeWheel from 'normalize-wheel';
 
@@ -63,6 +64,17 @@ class App {
       height: window.innerHeight
     }
 
+    this.viewport = {
+      height: 0,
+      width: 0
+    }
+
+    this.mouse = {
+      current: 0,
+      target: 0,
+      easing: 0.1,
+    }
+
     this.createRenderer()
     this.createCamera()
     this.createScene()
@@ -81,16 +93,15 @@ class App {
       alpha: true,
     });
     this.gl = this.renderer.gl;
-    
     this.gl.clearColor(0, 1, 1, .1);
 
-    // this.renderer.c
     document.body.appendChild(this.gl.canvas);
   }
 
   createCamera() {
     this.camera = new Camera(this.gl);
     this.camera.position.z = 5;
+    this.camera.fov = 45; 
   }
 
   createScene() {
@@ -110,12 +121,9 @@ class App {
   }
 
   // Events
-
-
   onMouseWheel(event) {
     const normalized = normalizeWheel(event);
-    console.log(normalized.pixelY);
-    
+    this.mouse.target += normalized.pixelY * 0.005
   }
 
   onResize() {
@@ -125,23 +133,26 @@ class App {
     }
 
     this.renderer.setSize(this.screenSizes.width, this.screenSizes.height);
+
     this.camera.perspective({
       aspect: this.gl.canvas.width / this.gl.canvas.height,
     });
+
+    this.viewport = {
+      height: 2 * Math.tan(this.camera.fov * Math.PI / 180 / 2) * this.camera.position.z,
+      width: this.gl.canvas.width
+    }
   }
 
 
   addEvents() {
     document.addEventListener('mousewheel', this.onMouseWheel.bind(this));
-
     window.addEventListener('resize', this.onResize.bind(this), false);
   }
 
   // Update
-
-  update() {
-    window.requestAnimationFrame(this.update.bind(this));
-    // console.log('update');
+  update() {    
+    this.mouse.current = lerp(this.mouse.current, this.mouse.target, this.mouse.easing);
 
     if (this.medias) {
       this.medias.forEach(media => {
@@ -150,6 +161,7 @@ class App {
     }
     
     this.renderer.render({ scene: this.scene, camera: this.camera });
+    window.requestAnimationFrame(this.update.bind(this));
   }
 }
 
