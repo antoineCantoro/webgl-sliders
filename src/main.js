@@ -1,38 +1,8 @@
 import './style.scss'
 import { lerp } from './Utils/lerp';
-import { Renderer, Camera, Transform, Box, Plane, Program, Mesh } from 'ogl';
+import { Renderer, Camera, Transform, Plane } from 'ogl';
 import normalizeWheel from 'normalize-wheel';
-
-// {
-
-//     function resize() {
-//         renderer.setSize(window.innerWidth, window.innerHeight);
-//         camera.perspective({
-//             aspect: gl.canvas.width / gl.canvas.height,
-//         });
-//     }
-//     window.addEventListener('resize', resize, false);
-//     resize();
-
-//     const scene = new Transform();
-
-//     const geometry = new Box(gl);
-
-
-
-
-
-//     requestAnimationFrame(update);
-//     function update(t) {
-//         requestAnimationFrame(update);
-
-//         mesh.rotation.y -= 0.04;
-//         mesh.rotation.x += 0.03;
-
-//         renderer.render({ scene, camera });
-//     }
-// }
-
+import Media from './Classes/Media';
 
 const imageSrcs = [
   '/images/1.webp',
@@ -40,6 +10,7 @@ const imageSrcs = [
   '/images/3.webp',
   '/images/4.webp',
   '/images/5.webp',
+  '/images/6.webp',
 ];
 
 const images = [];
@@ -54,11 +25,13 @@ const loadImage = (url) => {
 }
 
 Promise.all(imageSrcs.map(loadImage)).then((images) => {
-  console.log(images);
+  const app = new App(images);
 })
 
 class App {
-  constructor() {
+  constructor(images) {
+    this.images = images;
+
     this.screenSizes = {
       width: window.innerWidth,
       height: window.innerHeight
@@ -73,12 +46,13 @@ class App {
       current: 0,
       target: 0,
       easing: 0.1,
-    }
+    }    
 
     this.createRenderer()
     this.createCamera()
     this.createScene()
     this.createPlaneGeometry()
+    this.createMedias()
 
     this.addEvents()
     this.onResize()
@@ -111,13 +85,28 @@ class App {
 
   createPlaneGeometry() {
     this.geometry = new Plane(this.gl, {
-      heightSegments: 50,
-      widthSegments: 100
+      heightSegments: 2,
+      widthSegments: 2
     });
   }
 
   createMedias() {
-    // this.medias
+
+    this.medias = this.images.map((image, index) => {
+      
+      let media = new Media({
+        element: image,
+        gl: this.gl,
+        geometry: this.geometry,
+        index: index,
+        total: this.images.length,
+        viewport: this.viewport,
+        scene: this.scene,
+        camera: this.camera
+      });
+
+      return media;
+    })
   }
 
   // Events
@@ -142,12 +131,19 @@ class App {
       height: 2 * Math.tan(this.camera.fov * Math.PI / 180 / 2) * this.camera.position.z,
       width: this.gl.canvas.width
     }
+
+    if (this.medias) {
+      this.medias.forEach(media => {
+        media.onResize();
+      });
+    }
   }
 
 
   addEvents() {
-    document.addEventListener('mousewheel', this.onMouseWheel.bind(this));
     window.addEventListener('resize', this.onResize.bind(this), false);
+    window.addEventListener('mousewheel', this.onMouseWheel.bind(this));
+    window.addEventListener('wheel', this.onMouseWheel.bind(this));
   }
 
   // Update
@@ -164,5 +160,3 @@ class App {
     window.requestAnimationFrame(this.update.bind(this));
   }
 }
-
-const app = new App();
