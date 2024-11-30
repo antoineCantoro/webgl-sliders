@@ -77,10 +77,7 @@ export default class Media {
 
   setPositionX(direction) {
     const planeOffset = this.mesh.scale.x / 2
-    const viewportOffset = this.viewport.width
-
-    console.log(this.viewport.width);
-    
+    const viewportOffset = this.viewport.width    
    
     this.isBefore = this.mesh.position.x + planeOffset < -viewportOffset
     this.isAfter = this.mesh.position.x - planeOffset > viewportOffset
@@ -102,22 +99,11 @@ export default class Media {
 
   setPositionY() {
     // this.mesh.position.y = this.index * this.viewport.height;
-    this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y - this.padding;
+    // this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y - this.padding;
   }
 
   setScale() {
     const distanceFromCenter = Math.abs(1 - this.mesh.position.x - this.mesh.scale.x / 2)
-
-    const maxScaleY = this.viewport.height * (960 * this.scale) / this.screen.height;
-    const maxScaleX = this.viewport.width * (640 * this.scale) / this.screen.width;
-    const scaleFactor = 1 - (distanceFromCenter / this.viewport.width);
-
-    this.mesh.scale.y = maxScaleY * scaleFactor;
-    this.mesh.scale.x = maxScaleX * scaleFactor;
-
-    this.mesh.rotation.x = -Math.PI / 64 * this.mesh.position.x;
-    this.mesh.rotation.y = - this.mesh.rotation.x * 6;
-    // this.mesh.rotation.y = Math.abs(1 - this.mesh.position.x - this.mesh.scale.x / 2);
   }
 
 
@@ -152,15 +138,11 @@ export default class Media {
     this.sliderTotalWidth = this.mediaTotalWidth * this.length
     this.x = this.mediaTotalWidth * this.index
 
-    this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y / 2 + this.padding
   }
 
   onUpdate(scroll, direction) {
     this.setScale()
 
-    // 
-    const scaledWidth = this.mesh.scale.x + this.padding
-    // this.mesh.position.x = this.index * scaledWidth - scroll.current * 0.5 - this.extra
     this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
     this.program.uniforms.uVelocity.value = scroll.velocity
    
