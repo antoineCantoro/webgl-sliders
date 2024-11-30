@@ -17,6 +17,8 @@ void main() {
     vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
   );
 
+  newUv = (vUv - 0.5) * 0.9 + 0.5;
+
   gl_FragColor.rgb = texture2D(uTexture, newUv).rgb;
   gl_FragColor.a = 1.0;
 }

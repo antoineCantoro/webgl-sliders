@@ -49,7 +49,6 @@ export default class Media {
         uImageSizes: { value: [this.element.naturalWidth, this.element.naturalHeight] },
         uViewportSizes: { value: [this.viewport.width, this.viewport.height] },
         uTime: { value: 0 },
-        uVelocity: { value: 0 },
       },
     });
   }
@@ -75,49 +74,12 @@ export default class Media {
     // this.mesh.scale.y = this.viewport.height;
   }
 
-  setPositionX(direction) {
-    const planeOffset = this.mesh.scale.x / 2
-    const viewportOffset = this.viewport.width
-
-    console.log(this.viewport.width);
-    
-   
-    this.isBefore = this.mesh.position.x + planeOffset < -viewportOffset
-    this.isAfter = this.mesh.position.x - planeOffset > viewportOffset
-
-    if (direction === 'right' && this.isBefore) {
-      this.extra -= this.sliderTotalWidth
-   
-      this.isBefore = false
-      this.isAfter = false
-    }
-   
-    if (direction === 'left' && this.isAfter) {
-      this.extra += this.sliderTotalWidth
-   
-      this.isBefore = false
-      this.isAfter = false
-    }
+  setPositionX() {
+    // this.mesh.position.x = this.index * this.viewport.width;
   }
 
   setPositionY() {
     // this.mesh.position.y = this.index * this.viewport.height;
-    this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y - this.padding;
-  }
-
-  setScale() {
-    const distanceFromCenter = Math.abs(1 - this.mesh.position.x - this.mesh.scale.x / 2)
-
-    const maxScaleY = this.viewport.height * (960 * this.scale) / this.screen.height;
-    const maxScaleX = this.viewport.width * (640 * this.scale) / this.screen.width;
-    const scaleFactor = 1 - (distanceFromCenter / this.viewport.width);
-
-    this.mesh.scale.y = maxScaleY * scaleFactor;
-    this.mesh.scale.x = maxScaleX * scaleFactor;
-
-    this.mesh.rotation.x = -Math.PI / 64 * this.mesh.position.x;
-    this.mesh.rotation.y = - this.mesh.rotation.x * 6;
-    // this.mesh.rotation.y = Math.abs(1 - this.mesh.position.x - this.mesh.scale.x / 2);
   }
 
 
@@ -133,7 +95,7 @@ export default class Media {
 
     // Set original scale
 
-    this.scale = this.screen.height / 1800
+    this.scale = this.screen.height / 1500
 
     this.initialScale = {
       x: this.viewport.width * (640 * this.scale) / this.screen.width,
@@ -147,24 +109,49 @@ export default class Media {
 
 
     // Set original positions
-    this.padding = 0.2
+    this.padding = 0.1
     this.mediaTotalWidth = this.mesh.scale.x + this.padding
     this.sliderTotalWidth = this.mediaTotalWidth * this.length
     this.x = this.mediaTotalWidth * this.index
+
+    // console.log(this.x);
 
     this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y / 2 + this.padding
   }
 
   onUpdate(scroll, direction) {
-    this.setScale()
+    this.mesh.position.x = this.x - scroll * 0.5 - this.extra
 
-    // 
-    const scaledWidth = this.mesh.scale.x + this.padding
-    // this.mesh.position.x = this.index * scaledWidth - scroll.current * 0.5 - this.extra
-    this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
-    this.program.uniforms.uVelocity.value = scroll.velocity
+    const planeOffset = this.mesh.scale.x / 2
+    const viewportOffset = this.viewport.width
    
-    this.setPositionX(direction)
-    this.setPositionY()
+    this.isBefore = this.mesh.position.x + planeOffset < -viewportOffset
+    this.isAfter = this.mesh.position.x - planeOffset > viewportOffset
+
+    const distanceFromCenter = Math.abs(this.mesh.position.x - this.viewport.width)
+
+
+    const scaleFactor = Math.abs(1 - (distanceFromCenter / this.viewport.width))
+    this.mesh.scale.y = this.initialScale.y * scaleFactor
+    this.mesh.scale.x = this.initialScale.x * scaleFactor
+
+    if (this.index == 4) {
+      console.log(scaleFactor);
+      // console.log(distanceFromCenter);
+    }
+   
+    if (direction === 'right' && this.isBefore) {
+      this.extra -= this.sliderTotalWidth
+   
+      this.isBefore = false
+      this.isAfter = false
+    }
+   
+    if (direction === 'left' && this.isAfter) {
+      this.extra += this.sliderTotalWidth
+   
+      this.isBefore = false
+      this.isAfter = false
+    }
   }
 }

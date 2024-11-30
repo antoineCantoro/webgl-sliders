@@ -11,6 +11,10 @@ const imageSrcs = [
   '/images/4.webp',
   '/images/5.webp',
   '/images/6.webp',
+  '/images/7.webp',
+  '/images/8.webp',
+  '/images/9.webp',
+  '/images/10.webp',
 ];
 
 const images = [];
@@ -47,6 +51,7 @@ class App {
       target: 0,
       last: 0,
       easing: 0.2,
+      velocity: 0,
     }    
 
     this.createRenderer()
@@ -68,7 +73,7 @@ class App {
       alpha: true,
     });
     this.gl = this.renderer.gl;
-    this.gl.clearColor(0, 1, 1, .1);
+    this.gl.clearColor(0, 0, 0, .1);
 
     document.body.appendChild(this.gl.canvas);
   }
@@ -86,8 +91,8 @@ class App {
 
   createPlaneGeometry() {
     this.geometry = new Plane(this.gl, {
-      heightSegments: 2,
-      widthSegments: 2
+      heightSegments: 48,
+      widthSegments: 48
     });
   }
 
@@ -155,6 +160,7 @@ class App {
   // Update
   update() {    
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.easing);
+    this.scroll.velocity = this.scroll.current - this.scroll.target;    
 
     if (this.scroll.current > this.scroll.last) {
       this.direction = 'right'
@@ -164,7 +170,7 @@ class App {
 
     if (this.medias) {
       this.medias.forEach(media => {
-        media.onUpdate(this.scroll.current, this.direction);
+        media.onUpdate(this.scroll, this.direction);
       });
     }
 
