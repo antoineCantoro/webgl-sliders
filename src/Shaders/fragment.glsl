@@ -18,5 +18,7 @@ void main() {
   );
   
   gl_FragColor.rgb = texture2D(uTexture, newUv).rgb;
+  gl_FragColor.rgb += 0.1;
+
   gl_FragColor.a = 1.0;
 }

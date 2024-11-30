@@ -119,7 +119,7 @@ export default class Media {
 
     // Set original scale
 
-    this.scale = this.screen.height / 1800
+    this.scale = this.screen.height / 1600
 
     this.initialScale = {
       x: this.viewport.width * (640 * this.scale) / this.screen.width,
@@ -137,17 +137,26 @@ export default class Media {
     this.mediaTotalWidth = this.mesh.scale.x + this.padding
     this.sliderTotalWidth = this.mediaTotalWidth * this.length
     this.x = this.mediaTotalWidth * this.index
+    // this.z = 
 
   }
 
   onUpdate(scroll, direction) {
     this.setScale()
 
-    this.mesh.position.x = this.x - scroll.current - this.extra
+    this.mesh.rotation.y = this.mesh.position.x * Math.PI / this.viewport.width / 2
+    this.mesh.position.x = this.x - scroll.current - this.extra 
+    this.mesh.position.y = this.mesh.position.x * Math.PI / 16
+    this.mesh.position.z = -Math.abs(this.mesh.position.x) / 2
+    // this.mesh.scale.x = this.initialScale.x * (this.viewport.width / this.mesh.position.x + 1)
+    // this.mesh.scale.y = this.initialScale.y * Math.abs(this.mesh.position.x / 4)
+    // this.mesh.scale.y = this.initialScale.y - this.viewport.height / 2 + this.mesh.scale.y / 2 + this.padding * 2
+    
+
     // this.mesh.position.z = -Math.abs(this.mesh.position.x) * 0.2
-    this.mesh.rotation.y = (Math.PI / 8) * this.mesh.position.x
-    this.mesh.rotation.z = -(Math.PI / 8) * scroll.velocity * 0.2
-    this.program.uniforms.uVelocity.value = scroll.velocity
+    // this.mesh.rotation.y = (Math.PI / 8) * this.mesh.position.x
+    // this.mesh.rotation.z = -(Math.PI / 8) * scroll.velocity * 0.1
+    // this.program.uniforms.uVelocity.value = scroll.velocity
    
     this.setPositionX(direction)
     this.setPositionY()
