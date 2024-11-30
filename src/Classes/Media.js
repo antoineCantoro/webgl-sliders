@@ -130,7 +130,7 @@ export default class Media {
     this.mesh.scale.x = this.initialScale.x
    
     this.mesh.program.uniforms.uPlaneSizes.value = [this.mesh.scale.x, this.mesh.scale.y]
-
+    // this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y / 2 + this.padding * 2
 
     // Set original positions
     this.padding = 0.2
@@ -143,7 +143,10 @@ export default class Media {
   onUpdate(scroll, direction) {
     this.setScale()
 
-    this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
+    this.mesh.position.x = this.x - scroll.current - this.extra
+    // this.mesh.position.z = -Math.abs(this.mesh.position.x) * 0.2
+    this.mesh.rotation.y = (Math.PI / 8) * this.mesh.position.x
+    this.mesh.rotation.z = -(Math.PI / 8) * scroll.velocity * 0.2
     this.program.uniforms.uVelocity.value = scroll.velocity
    
     this.setPositionX(direction)
