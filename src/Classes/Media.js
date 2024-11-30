@@ -150,8 +150,8 @@ export default class Media {
 
     // this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
 
-    this.mesh.position.x = Math.cos(scroll.current + 2 * Math.PI / this.length * this.index ) * this.distance
-    this.mesh.position.z = Math.sin(scroll.current + 2 * Math.PI / this.length * this.index ) * this.distance - this.distance / 2
+    this.mesh.position.x = Math.cos(scroll.current / 6 + 2 * Math.PI / this.length * this.index ) * this.distance
+    this.mesh.position.z = Math.sin(scroll.current / 6 + 2 * Math.PI / this.length * this.index ) * this.distance - this.distance
 
     // this.mesh.rotation.y = -Math.PI / 2 + scroll.current + 2 * Math.PI / this.length * this.index
     this.mesh.rotation.y = this.mesh.position.x * 0.1 * Math.PI
