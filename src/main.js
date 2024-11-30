@@ -150,7 +150,6 @@ class App {
     }
   }
 
-
   addEvents() {
     window.addEventListener('resize', this.onResize.bind(this), false);
     window.addEventListener('mousewheel', this.onMouseWheel.bind(this));

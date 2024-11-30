@@ -131,19 +131,32 @@ export default class Media {
    
     this.mesh.program.uniforms.uPlaneSizes.value = [this.mesh.scale.x, this.mesh.scale.y]
 
+    this.distance = 3
+
+    // this.mesh.position.x = Math.cos(this.viewport.width / this.index) * 2
+    // this.mesh.position.y = -Math.sin(this.viewport.width / this.index) * 2
+
 
     // Set original positions
-    this.padding = 0.2
-    this.mediaTotalWidth = this.mesh.scale.x + this.padding
-    this.sliderTotalWidth = this.mediaTotalWidth * this.length
-    this.x = this.mediaTotalWidth * this.index
+    // this.padding = 0.2
+    // this.mediaTotalWidth = this.mesh.scale.x + this.padding
+    // this.sliderTotalWidth = this.mediaTotalWidth * this.length
+    // this.x = this.mediaTotalWidth * this.index
 
   }
 
   onUpdate(scroll, direction) {
     this.setScale()
 
-    this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
+    // this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
+
+    this.mesh.position.x = Math.cos(scroll.current + 2 * Math.PI / this.length * this.index ) * this.distance
+    this.mesh.position.z = Math.sin(scroll.current + 2 * Math.PI / this.length * this.index ) * this.distance - this.distance / 2
+
+    // this.mesh.rotation.y = -Math.PI / 2 + scroll.current + 2 * Math.PI / this.length * this.index
+    this.mesh.rotation.y = this.mesh.position.x * 0.1 * Math.PI
+    // this.mesh.rotation.x = scroll.current * this.index
+    // this.mesh.rotation.y = scroll.current * this.index * this.length
     this.program.uniforms.uVelocity.value = scroll.velocity
    
     this.setPositionX(direction)
