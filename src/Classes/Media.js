@@ -1,6 +1,7 @@
 import { Program, Mesh, Texture } from 'ogl';
 import vertexShader from '../Shaders/vertex.glsl';
 import fragmentShader from '../Shaders/fragment.glsl';
+import gsap from 'gsap';
 
 export default class Media { 
   constructor({
@@ -62,6 +63,12 @@ export default class Media {
     });
     
     this.mesh.setParent(this.scene);
+
+    this.setPositionX()
+
+    // gsap.fromTo(media.mesh.scale, 
+    //   { x: 0, y:0, z: 0 }, { x: 1, y: image.naturalHeight / image.naturalWidth , z: 1, duration: 1, ease: "power4.out", delay: 0.1 * index }
+    // )
   }
 
   createBounds() {
@@ -136,11 +143,13 @@ export default class Media {
     this.mesh.rotation.y = -angle + Math.PI / 2;
     this.mesh.position.x = Math.cos(angle) * this.distance
     this.mesh.position.z = Math.sin(angle) * this.distance
+
+    // gsap
   }
 
   onUpdate(direction) {
-    this.setScale()   
-    this.setPositionX(direction)
-    this.setPositionY()
+    // this.setScale()   
+    // this.setPositionX(direction)
+    // this.setPositionY()
   }
 }

@@ -4,6 +4,8 @@ import { Renderer, Camera, Transform, Plane } from 'ogl';
 import normalizeWheel from 'normalize-wheel';
 import Media from './Classes/Media';
 
+import { gsap } from 'gsap';
+
 const imageSrcs = [
   '/images/1.webp',
   '/images/2.webp',
@@ -119,6 +121,28 @@ class App {
 
       return media;
     })
+
+    gsap.fromTo(this.group.scale, {
+      x: 0,
+      y: 0,
+      z: 0
+    }, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 1,
+      ease: "expo.inOut"
+    })
+    gsap.fromTo(this.group.rotation, {
+      y: -4 * Math.PI,
+    }, {
+      y: 0,
+      duration: 2,
+      ease: "expo.out", 
+      onComplete: () => {
+        this.enableScroll = true
+      }
+    })
   }
 
   // Events
@@ -173,7 +197,13 @@ class App {
       this.direction = 'left'
     }
 
-    this.group.rotation.y = this.scroll.current * 0.25;
+    // if (this.scroll.velocity > 0.001) {
+      // }
+      //   this.group.rotation.y = this.scroll.current * 0.25;
+      
+    if (this.enableScroll) {
+      this.group.rotation.y = this.scroll.current * 0.25;
+    }
 
     if (this.medias) {
       this.medias.forEach(media => {
