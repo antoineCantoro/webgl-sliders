@@ -97,6 +97,10 @@ class App {
   }
 
   createMedias() {
+    this.group = new Transform();
+    this.group.position.z = -2
+    this.scene.addChild(this.group);
+
     this.medias = this.images.map((image, index) => {
       let media = new Media({
         element: image,
@@ -110,6 +114,8 @@ class App {
         screen: this.screenSizes,
         length: this.images.length
       });
+
+      this.group.addChild(media.mesh);
 
       return media;
     })
@@ -166,6 +172,8 @@ class App {
     } else {
       this.direction = 'left'
     }
+
+    this.group.rotation.y = this.scroll.current * 0.25;
 
     if (this.medias) {
       this.medias.forEach(media => {
