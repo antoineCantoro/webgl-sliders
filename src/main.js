@@ -5,16 +5,16 @@ import normalizeWheel from 'normalize-wheel';
 import Media from './Classes/Media';
 
 const imageSrcs = [
-  '/images/1.webp',
-  '/images/2.webp',
-  '/images/3.webp',
-  '/images/4.webp',
-  '/images/5.webp',
-  '/images/6.webp',
-  '/images/7.webp',
-  '/images/8.webp',
-  '/images/9.webp',
-  '/images/10.webp',
+  '/images/1.jpg',
+  '/images/2.jpg',
+  '/images/3.jpg',
+  '/images/4.jpg',
+  '/images/5.jpg',
+  '/images/6.jpg',
+  '/images/7.jpg',
+  '/images/8.jpg',
+  '/images/9.jpg',
+  '/images/10.jpg',
 ];
 
 const images = [];

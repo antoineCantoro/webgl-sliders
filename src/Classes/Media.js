@@ -100,6 +100,7 @@ export default class Media {
   setPositionY() {
     // this.mesh.position.y = this.index * this.viewport.height;
     // this.mesh.position.y = -this.viewport.height / 2 + this.mesh.scale.y - this.padding;
+    this.mesh.position.y = this.mesh.position.x / 1.5
   }
 
   setScale() {
@@ -122,8 +123,8 @@ export default class Media {
     this.scale = this.screen.height / 1800
 
     this.initialScale = {
-      x: this.viewport.width * (this.element.naturalWidth * this.scale) / this.screen.width,
-      y: this.viewport.height * (this.element.naturalHeight * this.scale) / this.screen.height
+      x: this.viewport.width * (980 * this.scale) / this.screen.width,
+      y: this.viewport.height * (980 / 4 * 3 * this.scale) / this.screen.height
     }
 
     this.mesh.scale.y = this.initialScale.y
@@ -134,16 +135,18 @@ export default class Media {
 
     // Set original positions
     this.padding = 0.2
-    this.mediaTotalWidth = this.mesh.scale.x + this.padding
+    this.mediaTotalWidth = this.mesh.scale.x + this.padding * 2
     this.sliderTotalWidth = this.mediaTotalWidth * this.length
     this.x = this.mediaTotalWidth * this.index
-
   }
 
   onUpdate(scroll, direction) {
     this.setScale()
 
     this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
+    this.mesh.position.z = Math.cos(this.mesh.position.x * -0.5)
+    this.mesh.rotation.y = Math.PI / 4 * this.mesh.position.x * 0.1
+    this.mesh.rotation.x = Math.PI / 4 * this.mesh.position.x * 0.2
     this.program.uniforms.uVelocity.value = scroll.velocity
    
     this.setPositionX(direction)
