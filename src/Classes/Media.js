@@ -143,7 +143,7 @@ export default class Media {
   onUpdate(scroll, direction) {
     this.setScale()
 
-    this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
+    this.mesh.position.x = this.x - scroll.current - this.extra
     this.mesh.position.z = Math.cos(this.mesh.position.x * -0.5)
     this.mesh.rotation.y = Math.PI / 4 * this.mesh.position.x * 0.1
     this.mesh.rotation.x = Math.PI / 4 * this.mesh.position.x * 0.2
