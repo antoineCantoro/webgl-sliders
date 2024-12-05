@@ -122,8 +122,8 @@ export default class Media {
     this.scale = this.screen.height / 1800
 
     this.initialScale = {
-      x: this.viewport.width * (640 * this.scale) / this.screen.width,
-      y: this.viewport.height * (960 * this.scale) / this.screen.height
+      x: this.viewport.width * (this.element.naturalWidth * this.scale) / this.screen.width,
+      y: this.viewport.height * (this.element.naturalHeight * this.scale) / this.screen.height
     }
 
     this.mesh.scale.y = this.initialScale.y
