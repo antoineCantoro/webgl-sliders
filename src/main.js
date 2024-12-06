@@ -1,6 +1,6 @@
 import './style.scss'
 import { lerp } from './Utils/lerp';
-import { Renderer, Camera, Transform, Plane } from 'ogl';
+import { Renderer, Camera, Transform, Plane, Raycast, Vec2 } from 'ogl';
 import normalizeWheel from 'normalize-wheel';
 import Media from './Classes/Media';
 
@@ -57,6 +57,7 @@ class App {
     this.createScene()
     this.createPlaneGeometry()
     this.createMedias()
+    this.createRaycaster()
 
     this.addEvents()
     this.onResize()
@@ -95,6 +96,7 @@ class App {
   }
 
   createMedias() {
+    this.meshes = [];
     this.medias = this.images.map((image, index) => {
       let media = new Media({
         element: image,
@@ -109,8 +111,15 @@ class App {
         length: this.images.length
       });
 
+      this.meshes.push(media.mesh);
+
       return media;
     })
+  }
+
+  createRaycaster() {
+    this.mouse = new Vec2();
+    this.raycaster = new Raycast(this.gl);
   }
 
   // Events
@@ -148,11 +157,31 @@ class App {
     }
   }
 
+  onMouseMove(event) {
+    // console.log(event.x);
+
+    // console.log(2.0 * (event.x / this.renderer.width) - 1.0);
+    
+    
+    this.mouse.set(2.0 * (event.x / this.renderer.width) - 1.0, 2.0 * (1.0 - event.y / this.renderer.height) - 1.0);
+    this.raycaster.castMouse(this.camera, this.mouse);
+
+    this.meshes.forEach((mesh) => (mesh.isHit = false));
+    
+    const hits = this.raycaster.intersectBounds(this.meshes);
+    hits.forEach((mesh) => {
+      mesh.isHit = true
+      if (mesh.isHit) {
+        console.log('hit');
+      }
+    });
+  }
 
   addEvents() {
     window.addEventListener('resize', this.onResize.bind(this), false);
     window.addEventListener('mousewheel', this.onMouseWheel.bind(this));
     window.addEventListener('wheel', this.onMouseWheel.bind(this));
+    window.addEventListener('mousemove', this.onMouseMove.bind(this), false);
   }
 
   // Update
