@@ -10,8 +10,9 @@
 }
 
 html {
-  color: #111;
-  // font-size: calc(100vw / 1920 * 10);
+  background-color: #111;
+  color: #fff;
+  font-size: calc(100vw / 1920 * 10);
   height: 100%;
   left: 0;
   position: fixed;
@@ -29,23 +30,6 @@ body {
   overscroll-behavior-y: none;
 }
 
-header {
-  position: absolute;
-  left: 3.2rem;
-  top: 3.2rem;
-}
-
-h1 {
-  font-size: 2.4rem;
-  margin-bottom: 1rem;
-  // font-weight: 400;
-}
-
-p {
-  font-size: 1.0rem;
-  line-height: 1.2;
-  max-width: calc(100vw / 3);
-}
 
 canvas {
   position: fixed;
@@ -55,10 +39,42 @@ canvas {
   height: 100%;
 }
 
-.credit {
-  position: absolute;
-  right: 2rem;
-  bottom: 2rem;
-  font-size: 1rem;
-  color: #666;
+// .credit {
+//   position: absolute;
+//   right: 2rem;
+//   bottom: 2rem;
+//   font-size: 1rem;
+//   color: #666;
+// }
+.c-title {
+  font-weight: 400;
+  font-size: 2rem;
+  position: fixed;
+  top: 3.2rem;
+  left: 3.2rem;
+
+  span {
+    font-weight: 700;
+  }
+}
+
+.c-counter {
+  position: fixed;
+  bottom: 3.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  letter-spacing: 0.12em;
+}
+
+.c-button {
+  position: fixed;
+  top: 3.2rem;
+  right: 3.2rem;
+  letter-spacing: -0.02em;
+  appearance: none;
+  border: none;
+  background-color: transparent;
+  font-size: 2rem;
+  color: inherit;
 }

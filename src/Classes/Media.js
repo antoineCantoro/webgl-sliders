@@ -50,6 +50,7 @@ export default class Media {
         uViewportSizes: { value: [this.viewport.width, this.viewport.height] },
         uTime: { value: 0 },
         uVelocity: { value: 0 },
+        uProgress: { value: 0 }
       },
     });
   }
@@ -145,8 +146,32 @@ export default class Media {
 
     this.mesh.position.x = this.x - scroll.current * 0.5 - this.extra
     this.program.uniforms.uVelocity.value = scroll.velocity
+
+    // if (this.index === 0) {
+      
+    const test = (this.mesh.position.x) / (this.viewport.width / 2 + this.mesh.scale.x / 2)
+    if (this.index === 0) {
+      console.log(test);
+      
+    }
+
+      // console.log(this.mesh.position.x, this.viewport.width, this.mesh.scale.x);
+      // console.log(
+      //   (this.mesh.position.x * this.mesh.scale.x / 2) 
+      //   / this.viewport.width
+      // );
+
+      // console.log(test);
+      
+      this.program.uniforms.uProgress.value = test
+      
+    // } else {
+    //   this.program.uniforms.uProgress.value = 0
+    // }
    
     this.setPositionX(direction)
     this.setPositionY()
   }
+
+  update
 }
