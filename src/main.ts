@@ -13,9 +13,9 @@ const imageSrcs = [
   '/images/6.webp',
 ];
 
-const images = [];
+const images: HTMLImageElement[] = [];
 
-const loadImage = (url) => {
+const loadImage = (url: string): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.src = url;
@@ -29,7 +29,19 @@ Promise.all(imageSrcs.map(loadImage)).then((images) => {
 })
 
 class App {
-  constructor(images) {
+  private images: HTMLImageElement[];
+  private screenSizes: AppScreen;
+  private viewport: AppViewport;
+  private scroll: AppScroll;
+  private renderer!: Renderer;
+  private gl!: OGLRenderingContext;
+  private camera!: Camera;
+  private scene!: Transform;
+  private geometry!: Plane;
+  private medias!: Media[];
+  private direction: string;
+  
+  constructor(images: HTMLImageElement[]) {
     this.images = images;
 
     this.screenSizes = {
@@ -138,7 +150,7 @@ class App {
     if (this.medias) {
       this.medias.forEach(media => {
         media.onResize({
-          screen: this.screen,
+          screen: this.screenSizes,
           viewport: this.viewport
         });
       });
